@@ -2,15 +2,14 @@
 using Game.Players.Constants;
 using Game.Services.Abstract;
 using Game.Tickets.Constants;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Game.Tickets.Abstract;
+using Game.Tickets.Concrete;
 
 namespace Game.Services.Concrete
 {
 	public class TicketService : ITicketService
 	{
-		private IConfiguration Configuration => ServiceBuilder.ServiceProvider?.GetService<IConfiguration>() ?? throw new InvalidOperationException("Configuration is not initialized.");
 		private IMessageDisplayService MessageDisplayService => ServiceBuilder.ServiceProvider?.GetService<IMessageDisplayService>() ?? throw new InvalidOperationException("MessageDisplayService is not initialized.");
 
 		public void PurchaseTickets(List<BasePlayer> players)
@@ -19,13 +18,9 @@ namespace Game.Services.Concrete
 			{
 				throw new ArgumentException("Players list cannot be null or empty.", nameof(players));
 			}
-			int allowedTicketsAmountToPurchaseMinimum = int.Parse(
-				Configuration["AllowedTicketsAmountToPurchaseMinimum"] ??
-				PlayersConstants.DefaultAllowedTicketsAmountToPurchaseMinimum);
+			int allowedTicketsAmountToPurchaseMinimum = PlayersConstants.DefaultAllowedTicketsAmountToPurchaseMinimum;
 
-			int allowedTicketsAmountToPurchaseMaximum = int.Parse(
-				Configuration["AllowedTicketsAmountToPurchaseMaximum"] ??
-				PlayersConstants.DefaultAllowedTicketsAmountToPurchaseMaximum);
+			int allowedTicketsAmountToPurchaseMaximum = PlayersConstants.DefaultAllowedTicketsAmountToPurchaseMaximum;
 
 			int ticketsAmount;
 			while (!int.TryParse(Console.ReadLine(), out ticketsAmount) ||
@@ -57,7 +52,7 @@ namespace Game.Services.Concrete
 				throw new ArgumentNullException(nameof(player), "Player cannot be null.");
 			}
 
-			float ticketPrice = float.Parse(Configuration["TicketPrice"] ?? TicketsConstants.DefaultTicketPrice);
+			double ticketPrice = TicketsConstants.DefaultTicketPrice;
 
 			int maximumTickets = Math.Min((int)(player.Balance / ticketPrice), ticketsAmount);
 			if (maximumTickets <= 0)
@@ -68,7 +63,7 @@ namespace Game.Services.Concrete
 			List<BaseTicket> tickets = new List<BaseTicket>();
 			for (int i = 0; i < maximumTickets; i++)
 			{
-				tickets.Add(new BaseTicket(Guid.NewGuid(), ticketPrice));
+				tickets.Add(new Ticket(Guid.NewGuid(), ticketPrice));
 			}
 
 			player.SetTickets(tickets);

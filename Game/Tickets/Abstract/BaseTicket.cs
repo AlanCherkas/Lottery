@@ -3,9 +3,9 @@
 	public class BaseTicket
 	{
 		public Guid Id { get; set; }
-		public float Price { get; set; }
+		public double Price { get; set; }
 
-		public BaseTicket(Guid id, float price)
+		public BaseTicket(Guid id, double price)
 		{
 			Id = id;
 			Price = price;

@@ -16,7 +16,6 @@ namespace GameTests.ServiceTests
 
 			// Act
 			var exception = Record.Exception(() => lotteryService.StartLottery());
-			
 
 			// Assert
 			Assert.Null(exception);

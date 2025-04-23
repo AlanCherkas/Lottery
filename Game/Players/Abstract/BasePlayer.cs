@@ -7,10 +7,10 @@ namespace Game.Players.Abstract
 		public Guid Id { get; }
 		public string Name { get; }
 		public int Number { get; }
-		public float Balance { get; set; }
+		public double Balance { get; set; }
 		public List<BaseTicket>? Tickets { get; set; }
 
-		public BasePlayer(Guid id, string name, float balance, int number)
+		public BasePlayer(Guid id, string name, double balance, int number)
 		{
 			Id = id;
 			Name = name;

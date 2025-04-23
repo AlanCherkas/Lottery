@@ -7,7 +7,7 @@ namespace Game.Services.Concrete
 {
 	public class ConsoleMessageDisplayService : IMessageDisplayService
 	{
-		public void DisplayWelcomeMessage(BasePlayer? player, float ticketPrice)
+		public void DisplayWelcomeMessage(BasePlayer? player, double ticketPrice)
 		{
 			if (player == null)
 			{
@@ -58,7 +58,17 @@ namespace Game.Services.Concrete
 			{
 				var secondTierGroups = secondTierWinners
 					.GroupBy(w => w.Prize)
-					.Select(g => $"Players: {string.Join(", ", g.Select(w => w.Player!.Number))} win ${g.Key} each!");
+					.Select(g =>
+					{
+						if (g.Count() > 1)
+						{
+							return $"Players: {string.Join(", ", g.Select(w => w.Player?.Number))} win ${g.Key} each!";
+						}
+						else
+						{
+							return $"Player {string.Join(", ", g.Select(w => w.Player?.Number))} win ${g.Key}!";
+						}
+					});
 				foreach (var group in secondTierGroups)
 				{
 					Console.WriteLine($"* Second Tier: {group}");
@@ -69,7 +79,17 @@ namespace Game.Services.Concrete
 			{
 				var thirdTierGroups = thirdTierWinners
 					.GroupBy(w => w.Prize)
-					.Select(g => $"Players: {string.Join(", ", g.Select(w => w.Player?.Number))} win ${g.Key} each!");
+					.Select(g =>
+					{
+						if (g.Count() > 1)
+						{
+							return $"Players: {string.Join(", ", g.Select(w => w.Player?.Number))} win ${g.Key} each!";
+						}
+						else
+						{
+							return $"Player {string.Join(", ", g.Select(w => w.Player?.Number))} win ${g.Key}!";
+						}
+					});
 				foreach (var group in thirdTierGroups)
 				{
 					Console.WriteLine($"* Third Tier: {group}");
@@ -77,14 +97,14 @@ namespace Game.Services.Concrete
 			}
 
 			Console.WriteLine();
-			Console.WriteLine("\nCongratulations to the winners");
+			Console.WriteLine("Congratulations to the winners!");
 		}
 
 
-		public void DisplayHouseProfit(float profit)
+		public void DisplayHouseProfit(double profit)
 		{
 			Console.WriteLine();
-			Console.WriteLine($"House Profit: ${profit:#,0.00}");
+			Console.WriteLine($"House Revenue: ${profit:#,0.00}");
 		}
 	}
 }

@@ -4,18 +4,14 @@ using Game.Players.Abstract;
 using Game.Services.Abstract;
 using Game.Tickets.Abstract;
 using Game.Tickets.Constants;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Game.Services.Concrete
 {
 	public class PrizeCalculationService : IPrizeCalculationService
 	{
-		private IConfiguration Configuration => ServiceBuilder.ServiceProvider?.GetService<IConfiguration>() ?? throw new InvalidOperationException("Configuration is not initialized.");
-
 		public List<WinnerDto> CalculatePrize(List<BasePlayer> players)
 		{
-			float revenue = players.Sum(player =>
+			double revenue = players.Sum(player =>
 			{
 				if (player.Tickets == null)
 				{
@@ -45,9 +41,9 @@ namespace Game.Services.Concrete
 		}
 
 
-		private void CalculateGrandPrizeWinners(List<BaseTicket> eligibleTickets, List<BasePlayer> participatingPlayers, List<WinnerDto> winners, float revenue)
+		private void CalculateGrandPrizeWinners(List<BaseTicket> eligibleTickets, List<BasePlayer> participatingPlayers, List<WinnerDto> winners, double revenue)
 		{
-			int grandPrizeAmount = (int)(revenue * float.Parse(Configuration["GrandPrizeCoefficient"] ?? TicketsConstants.DefaultGrandPrizeCoefficient));
+			int grandPrizeAmount = (int)(revenue * TicketsConstants.DefaultGrandPrizeCoefficient);
 			var random = new Random();
 			var winnerTicket = eligibleTickets[random.Next(eligibleTickets.Count)];
 			var winner = participatingPlayers.First(p => (bool)p.Tickets?.Contains(winnerTicket));
@@ -66,10 +62,10 @@ namespace Game.Services.Concrete
 		}
 
 		private void CalculateSecondTierWinners(List<BaseTicket> eligibleTickets, List<BasePlayer> participatingPlayers,
-			List<WinnerDto> winners, float revenue)
+			List<WinnerDto> winners, double revenue)
 		{
-			int secondTierPrizeAmount = (int)(revenue * float.Parse(Configuration["GrandSecondTierCoefficient"] ?? TicketsConstants.DefaultSecondTierCoefficient));
-			int secondTierWinnersAmount = (int)Math.Round(eligibleTickets.Count * float.Parse(Configuration["SecondTierTickets"] ?? TicketsConstants.DefaultSecondTierTickets));
+			int secondTierPrizeAmount = (int)(revenue * TicketsConstants.DefaultSecondTierCoefficient);
+			int secondTierWinnersAmount = (int)Math.Round(eligibleTickets.Count * TicketsConstants.DefaultSecondTierTickets);
 			var random = new Random();
 
 			if (secondTierWinnersAmount > 0 && eligibleTickets.Count > 0)
@@ -97,10 +93,10 @@ namespace Game.Services.Concrete
 		}
 
 		private void CalculateThirdTierWinners(List<BaseTicket> eligibleTickets, List<BasePlayer> participatingPlayers,
-			List<WinnerDto> winners, float revenue)
+			List<WinnerDto> winners, double revenue)
 		{
-			int thirdTierPrizeAmount = (int)(revenue * float.Parse(Configuration["ThirdTierCoefficient"] ?? TicketsConstants.DefaultThirdTierCoefficient));
-			int thirdTierWinnersAmount = (int)Math.Round(eligibleTickets.Count * float.Parse(Configuration["ThirdTierTickets"] ?? TicketsConstants.DefaultThirdTierTickets));
+			int thirdTierPrizeAmount = (int)(revenue * TicketsConstants.DefaultThirdTierCoefficient);
+			int thirdTierWinnersAmount = (int)Math.Round(eligibleTickets.Count * TicketsConstants.DefaultThirdTierTickets);
 			var random = new Random();
 
 			if (thirdTierWinnersAmount > 0 && eligibleTickets.Count > 0)
@@ -127,9 +123,9 @@ namespace Game.Services.Concrete
 			}
 		}
 
-		public float CalculateHouseProfit(List<BasePlayer> players, List<WinnerDto> winners)
+		public double CalculateHouseProfit(List<BasePlayer> players, List<WinnerDto> winners)
 		{
-			float revenue = players.Sum(player =>
+			double revenue = players.Sum(player =>
 			{
 				if (player.Tickets == null)
 				{
@@ -138,7 +134,7 @@ namespace Game.Services.Concrete
 				return player.Tickets.Sum(t => t.Price);
 			});
 
-			float totalPrize = winners.Sum(w => w.Prize);
+			double totalPrize = winners.Sum(w => w.Prize);
 
 			return revenue - totalPrize;
 		}

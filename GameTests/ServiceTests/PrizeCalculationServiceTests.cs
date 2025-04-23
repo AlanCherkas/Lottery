@@ -27,7 +27,7 @@ namespace GameTests.ServiceTests
 			var prizeCalculationService = new PrizeCalculationService();
 
 			// Act
-			float profit = prizeCalculationService.CalculateHouseProfit(new List<BasePlayer>(), new List<WinnerDto>());
+			double profit = prizeCalculationService.CalculateHouseProfit(new List<BasePlayer>(), new List<WinnerDto>());
 
 			// Assert
 			Assert.Equal(0, profit);

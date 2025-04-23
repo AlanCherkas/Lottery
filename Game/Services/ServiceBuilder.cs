@@ -26,6 +26,7 @@ namespace Game.Services
 		{
 			var serviceCollection = new ServiceCollection();
 
+			//A configuration Json file has been added to expand functionality and add flexibility to the application.
 			var configurationBuilder = new ConfigurationBuilder().AddJsonFile($"appsettings.json", false, true);
 			serviceCollection.AddSingleton<IConfiguration>(configurationBuilder.Build());
 
