@@ -1,7 +1,7 @@
 # Lottery Game
 
 The player enters the lottery with an initial balance and chooses how many tickets to buy.
-The player is informed how many tickets the CPU players purchased and the prize distribution.
+The player is informed how many CPU players have purchased tickets and how the prizes are distributed.
 
 ## Prize distribution
 There will be the following prizes: 
